@@ -24,5 +24,5 @@ public class MyClass
 	public string Size { get; set; }
 }
 
-List<MyClass> = cn.ExecuteReader("SELECT * FROM MyTable").ToMyClass();
+List<MyClass> result = cn.ExecuteReader("SELECT * FROM MyTable").ToMyClass();
 ```

@@ -38,11 +38,13 @@ List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyC
 
 ## Some notes
 
-* The `ToMyClass()` method above - is an extension method generated at compile time.
-* The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#)
+* The `ToMyClass()` method above - is an extension method generated at compile time. You can even "go to definition" in Visual Studio and examine its code.
+* The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#).
 * Maps properies with public setters only.
 * The reader is being closed after mapping, so don't reuse it.
-* The example above uses Dapper's `.ExecuteReader` method, but you can generate the reader in any way you want, e.g. `SqlCommand.ExecuteReader` will also work.
+* The example above uses `.ExecuteReader` method from Dapper, but you can generate the reader in any way you want, e.g. the plain `SqlCommand.ExecuteReader` will also work.
 * Supports `enum` properties based on `int` and other implicit casting (sometimes a DataReader may decide to return `byte` for small integer database value, and it maps to `int` perfectly via some unboxing magic)
+* Properly maps `DBNull` to `null`.
 * Complex-type properties may not work.
 * netstandard 2.0
+* Contributions are very welcome.

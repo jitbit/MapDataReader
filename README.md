@@ -5,7 +5,7 @@ Super fast mapping DataReader to a strongly typed object, Using AOT source gener
 
 ## Benchmarks
 
-20X faster than using reflection (`GetProperties` for a type then `Invoke` the setters), even with caching. Benchmark for a tiny class with 5 string properties:
+20X faster than using reflection, even with caching. Benchmark for a tiny class with 5 string properties:
 
 | Method         |      Mean |     Error |   StdDev |   Gen0 | Allocated |
 |--------------- |----------:|----------:|---------:|-------:|----------:|

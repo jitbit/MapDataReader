@@ -27,15 +27,75 @@ namespace MyCode
     }
 }
 ";
-			var src = GetOutputSource(userSource);
+			var src = GetAndCheckOutputSource(userSource);
 
 			Assert.IsTrue(src.Contains(@"case ""Name"": target.Name = (string)value; break;"));
 			Assert.IsTrue(src.Contains(@"case ""Size"": target.Size = (int)Convert.ChangeType(value, typeof(int)); break;"));
 			Assert.IsTrue(src.Contains(@"case ""Enabled"": target.Enabled = (bool)Convert.ChangeType(value, typeof(bool)); break;"));
 		}
 
+		[TestMethod]
+		public void TestNoPublicSetter()
+		{
+			string userSource = @"
+using MapDataReader;
+
+namespace MyCode
+{
+	[GenerateDataReaderMapper]
+    public class A
+    {
+        public string Name {get; private set; }
+		public string NamePublic {get; set; }
+    }
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+
+			Assert.IsFalse(src.Contains(@"case ""Name"""));
+			Assert.IsTrue(src.Contains(@"case ""NamePublic"""));
+		}
+
+		[TestMethod]
+		public void TestNoNamespace()
+		{
+			string userSource = @"
+using MapDataReader;
+
+[GenerateDataReaderMapper]
+public class A
+{
+    public string B {get; set; }
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+
+			Assert.IsTrue(src.Contains(@"case ""B"": target.B = (string)value;"));
+		}
+
+		[TestMethod]
+		public void TestWithArrays()
+		{
+			string userSource = @"
+using MapDataReader;
+
+[GenerateDataReaderMapper]
+public class A
+{
+    public byte[] B {get; set; }
+	public string[] C {get; set; }
+	public int[] D {get; set; }
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+
+			Assert.IsTrue(src.Contains(@"case ""B"": target.B = (byte[])value;"));
+			Assert.IsTrue(src.Contains(@"case ""C"": target.C = (string[])value;"));
+			Assert.IsTrue(src.Contains(@"case ""D"": target.D = (int[])value;"));
+		}
+
 		//gets generated source and also unit-tests for exceptions and empty diagnistics etc
-		private string GetOutputSource(string inputSource)
+		private string GetAndCheckOutputSource(string inputSource)
 		{
 			var generator = new MapperGenerator();
 
@@ -68,7 +128,7 @@ namespace MyCode
 			Assert.IsTrue(generatorResult.GeneratedSources.Length == 1);
 			Assert.IsTrue(generatorResult.Exception is null);
 
-			//now actually test the source generated
+			//now actually return the source generated
 			return generatorResult.GeneratedSources[0].SourceText.ToString();
 		}
 

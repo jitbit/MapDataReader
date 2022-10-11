@@ -60,11 +60,13 @@ namespace MapDataReader
 								}).StringConcat("\r\n") } 
 
 								}} //end switch
+
 							}} //end method";
 
 				if (typeNodeSymbol.InstanceConstructors.Any(c => !c.Parameters.Any())) //has a constructor without parameters?
 				{
 					src += $@"
+
 							public static List<{typeNodeSymbol.FullName()}> To{typeNode.Identifier}(this IDataReader dr)
 							{{
 								var list = new List<{typeNodeSymbol.FullName()}>();

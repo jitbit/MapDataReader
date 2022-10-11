@@ -54,12 +54,13 @@ namespace MapDataReader
 
 								switch (name) {{ {"\r\n" + allProperties.Select(p =>
 								{
-									if (p.Type.IsReferenceType || p.Type.FullName().EndsWith("?")) //ref types and nullable type - just cast to property type
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({p.Type.FullName()})value; break;";
+									var pTypeName = p.Type.FullName();
+									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
+										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})value; break;";
 									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to in first, you can't cast a boxed int to enum directly
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({p.Type.FullName()})(int)value; break;"; //pre-convert enums to int first
+										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})(int)value; break;"; //pre-convert enums to int first
 									else //primitive types. use Convert.ChangeType before casting. To support assigning int16 to int32 (for example) which does not work (you can't cast a boxed "byte" to "int", for example)
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({p.Type.FullName()})Convert.ChangeType(value, typeof({p.Type.FullName()})); break;";
+										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); break;";
 								}).StringConcat("\r\n") } 
 
 								}} //end switch

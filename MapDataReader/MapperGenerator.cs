@@ -56,11 +56,17 @@ namespace MapDataReader
 								{
 									var pTypeName = p.Type.FullName();
 									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
+									{
 										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})value; break;";
-									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to in first, you can't cast a boxed int to enum directly
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})(int)value; break;"; //pre-convert enums to int first
-									else //primitive types. use Convert.ChangeType before casting. To support assigning int16 to int32 (for example) which does not work (you can't cast a boxed "byte" to "int", for example)
+									}
+									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
+									{
+										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})(int)Convert.ChangeType(value, typeof({pTypeName})); break;"; //pre-convert enums to int first (after unboxing, see below)
+									}
+									else //primitive types. use Convert.ChangeType before casting. To support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
+									{
 										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); break;";
+									}
 								}).StringConcat("\r\n") } 
 
 								}} //end switch

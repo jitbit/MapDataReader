@@ -21,7 +21,9 @@ Install-Package MapDataReader
 ## Usage
 
 ```csharp
-[GenerateDataReaderMapper]
+using MapDataReader;
+
+[GenerateDataReaderMapper] // <-- mark your class with this attribute
 public class MyClass
 {
 	public int ID { get; set; }
@@ -30,12 +32,13 @@ public class MyClass
 	public bool Enabled { get; set; }
 }
 
+//ToMyClass() method code is generated at compile time
 List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyClass();
 ```
 
 ## Some notes
 
-* The `ToMyClass()` method above - is an etension method generated at compile time.
+* The `ToMyClass()` method above - is an extension method generated at compile time.
 * The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#)
 * Maps properies with public setters only.
 * The reader is being closed after mapping, so don't reuse it.

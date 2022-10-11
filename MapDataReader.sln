@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapDataReader", "MapDataReader\MapDataReader.csproj", "{8D4B7D66-48DA-4B9B-AF0F-26B1F73DFCDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapDataReader.Tests", "MapDataReader.Tests\MapDataReader.Tests.csproj", "{B75A0108-AC68-4534-BA28-C27C4DF1CF71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8D4B7D66-48DA-4B9B-AF0F-26B1F73DFCDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D4B7D66-48DA-4B9B-AF0F-26B1F73DFCDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D4B7D66-48DA-4B9B-AF0F-26B1F73DFCDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B75A0108-AC68-4534-BA28-C27C4DF1CF71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B75A0108-AC68-4534-BA28-C27C4DF1CF71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B75A0108-AC68-4534-BA28-C27C4DF1CF71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B75A0108-AC68-4534-BA28-C27C4DF1CF71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

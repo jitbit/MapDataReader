@@ -1,6 +1,8 @@
 # MapDataReader
 Super fast mapping DataReader to a strongly typed object, Using AOT source generator, no reflection, mapping code is generated at runtime.
 
+[![.NET](https://github.com/jitbit/MapDataReader/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jitbit/MapDataReader/actions/workflows/dotnet.yml)
+
 ## Benchmarks
 
 20X faster than using reflection (`GetProperties` for a type then `Invoke` the setters), even with caching. Benchmark for a tiny class with 5 string properties:

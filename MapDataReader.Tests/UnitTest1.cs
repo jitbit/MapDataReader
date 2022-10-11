@@ -94,6 +94,25 @@ public class A
 			Assert.IsTrue(src.Contains(@"case ""D"": target.D = (int[])value;"));
 		}
 
+		[TestMethod]
+		public void TestWithNoParameterlessConstructor()
+		{
+			string userSource = @"
+using MapDataReader;
+
+[GenerateDataReaderMapper]
+public class Abc
+{
+	public Abc(int blahblah) { }
+
+	public byte B {get; set; }
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+
+			Assert.IsFalse(src.Contains(@"ToAbc(this"));
+		}
+
 		//gets generated source and also unit-tests for exceptions and empty diagnistics etc
 		private string GetAndCheckOutputSource(string inputSource)
 		{

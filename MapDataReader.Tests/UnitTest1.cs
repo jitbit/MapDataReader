@@ -19,12 +19,12 @@ using MapDataReader;
 namespace MyCode
 {
 	[GenerateDataReaderMapper]
-    public class MyClass
-    {
-        public string Name {get;set;}
+	public class MyClass
+	{
+		public string Name {get;set;}
 		public int Size {get;set;}
 		public bool Enabled {get;set;}
-    }
+	}
 }
 ";
 			var src = GetAndCheckOutputSource(userSource);
@@ -43,11 +43,11 @@ using MapDataReader;
 namespace MyCode
 {
 	[GenerateDataReaderMapper]
-    public class A
-    {
-        public string Name {get; private set; }
+	public class A
+	{
+		public string Name {get; private set; }
 		public string NamePublic {get; set; }
-    }
+	}
 }
 ";
 			var src = GetAndCheckOutputSource(userSource);
@@ -65,7 +65,7 @@ using MapDataReader;
 [GenerateDataReaderMapper]
 public class A
 {
-    public string B {get; set; }
+	public string B {get; set; }
 }
 ";
 			var src = GetAndCheckOutputSource(userSource);
@@ -82,7 +82,7 @@ using MapDataReader;
 [GenerateDataReaderMapper]
 public class A
 {
-    public byte[] B {get; set; }
+	public byte[] B {get; set; }
 	public string[] C {get; set; }
 	public int[] D {get; set; }
 }

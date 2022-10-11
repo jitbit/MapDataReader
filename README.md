@@ -1,11 +1,11 @@
 # MapDataReader
-Super fast mapping DataReader to a strongly typed object, Using AOT source generator, no reflection, mapping code is generated at runtime.
+Super fast mapping DataReader to a strongly typed object. High performance, lighweight (12Kb dll), uses AOT source generation and no reflection, mapping code is generated at compile time.
 
 [![.NET](https://github.com/jitbit/MapDataReader/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jitbit/MapDataReader/actions/workflows/dotnet.yml)
 
 ## Benchmarks
 
-20X faster than using reflection (`GetProperties` for a type then `Invoke` the setters), even with caching. Benchmark for a tiny class with 5 string properties:
+20X faster than using reflection, even with caching. Benchmark for a tiny class with 5 string properties:
 
 | Method         |      Mean |     Error |   StdDev |   Gen0 | Allocated |
 |--------------- |----------:|----------:|---------:|-------:|----------:|
@@ -21,7 +21,9 @@ Install-Package MapDataReader
 ## Usage
 
 ```csharp
-[GenerateDataReaderMapper]
+using MapDataReader;
+
+[GenerateDataReaderMapper] // <-- mark your class with this attribute
 public class MyClass
 {
 	public int ID { get; set; }
@@ -30,12 +32,13 @@ public class MyClass
 	public bool Enabled { get; set; }
 }
 
+//ToMyClass() method code is generated at compile time
 List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyClass();
 ```
 
 ## Some notes
 
-* The `ToMyClass()` method above - is an etension method generated at compile time.
+* The `ToMyClass()` method above - is an extension method generated at compile time.
 * The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#)
 * Maps properies with public setters only.
 * The reader is being closed after mapping, so don't reuse it.

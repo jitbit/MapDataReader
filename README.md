@@ -12,7 +12,7 @@ Super fast mapping DataReader to a strongly typed object. High performance, ligh
 |  Reflection    | 951.16 ns | 15.107 ns | 0.828 ns | 0.1459 |     920 B |
 |  MapDataReader |  44.15 ns |  2.840 ns | 0.156 ns | 0.0089 |      56 B |
 
-## Install
+## Install via [Nuget](https://www.nuget.org/packages/MapDataReader/)
 
 ```
 Install-Package MapDataReader

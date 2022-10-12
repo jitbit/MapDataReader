@@ -62,6 +62,8 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(o.DoubleKick == 123);
 			o.SetPropertyByName("Floating", 123);
 			Assert.IsTrue(o.Floating == 123);
+			o.SetPropertyByName("fLOAtInG", 123); //mess the casing, should still work
+			Assert.IsTrue(o.Floating == 123);
 			o.SetPropertyByName("What", 123);
 			Assert.IsTrue(o.What == 123);
 			o.SetPropertyByName("ImBored", (nint)123);

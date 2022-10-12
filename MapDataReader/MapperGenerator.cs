@@ -52,24 +52,23 @@ namespace MapDataReader
 							{{
 								if (value==null) return; //don't asssign null-values. not needed for datareader initialization anyway
 
-								switch (name) {{ {"\r\n" + allProperties.Select(p =>
+								{"\r\n" + allProperties.Select(p =>
 								{
 									var pTypeName = p.Type.FullName();
 									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
 									{
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})value; break;";
+										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})value; return; }}";
 									}
 									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})(int)Convert.ChangeType(value, typeof(int)); break;"; //pre-convert enums to int first (after unboxing, see below)
+										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})(int)Convert.ChangeType(value, typeof(int)); return; }}"; //pre-convert enums to int first (after unboxing, see below)
 									}
 									else //primitive types. use Convert.ChangeType before casting. To support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	case ""{p.Name}"": target.{p.Name} = ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); break;";
+										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
 									}
 								}).StringConcat("\r\n") } 
 
-								}} //end switch
 
 							}} //end method";
 

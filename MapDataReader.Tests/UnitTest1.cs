@@ -29,9 +29,9 @@ namespace MyCode
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"case ""Name"": target.Name = (string)value; break;"));
-			Assert.IsTrue(src.Contains(@"case ""Size"": target.Size = (int)Convert.ChangeType(value, typeof(int)); break;"));
-			Assert.IsTrue(src.Contains(@"case ""Enabled"": target.Enabled = (bool)Convert.ChangeType(value, typeof(bool)); break;"));
+			Assert.IsTrue(src.Contains(@"""Name"", StringComparison.OrdinalIgnoreCase)) { target.Name = (string)value;"));
+			Assert.IsTrue(src.Contains(@"""Size"", StringComparison.OrdinalIgnoreCase)) { target.Size = (int)Convert.ChangeType(value, typeof(int)); return;"));
+			Assert.IsTrue(src.Contains(@"""Enabled"", StringComparison.OrdinalIgnoreCase)) { target.Enabled = (bool)Convert.ChangeType(value, typeof(bool)); return;"));
 		}
 
 		[TestMethod]
@@ -52,8 +52,8 @@ namespace MyCode
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsFalse(src.Contains(@"case ""Name"""));
-			Assert.IsTrue(src.Contains(@"case ""NamePublic"""));
+			Assert.IsFalse(src.Contains(@".Equals(""Name"""));
+			Assert.IsTrue(src.Contains(@".Equals(""NamePublic"""));
 		}
 
 		[TestMethod]
@@ -70,7 +70,7 @@ public class A
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"case ""B"": target.B = (string)value;"));
+			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (string)value;"));
 		}
 
 		[TestMethod]
@@ -89,9 +89,9 @@ public class A
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"case ""B"": target.B = (byte[])value;"));
-			Assert.IsTrue(src.Contains(@"case ""C"": target.C = (string[])value;"));
-			Assert.IsTrue(src.Contains(@"case ""D"": target.D = (int[])value;"));
+			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (byte[])value;"));
+			Assert.IsTrue(src.Contains(@"""C"", StringComparison.OrdinalIgnoreCase)) { target.C = (string[])value;"));
+			Assert.IsTrue(src.Contains(@"""D"", StringComparison.OrdinalIgnoreCase)) { target.D = (int[])value;"));
 		}
 
 		[TestMethod]

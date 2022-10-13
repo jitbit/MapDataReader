@@ -49,3 +49,24 @@ List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyC
 * Complex-type properties may not work.
 * netstandard 2.0
 * Contributions are very welcome.
+
+### P.S. Using it with Dapper
+
+If you're already using the awesome [Dapper ORM](https://github.com/DapperLib/Dapper) by Marc Gravel, Sam Saffron and Nick Craver, this is how you can use our library to speed up DataReader-to-object mapping in Dapper:
+
+```csharp
+// override Dapper extension method to use fast MapDataReader instead of Dapper's built-in reflection
+public static List<T> Query<T>(this SqlConnection cn, string sql, object parameters)
+{
+	if (typeof(T) == typeof(MyClass)) //our own class that we marked with attribute? use MapDataReader
+		return cn.ExecuteReader(sql, parameters).ToMyClass() as List<T>;
+
+	if (typeof(T) == typeof(AnotherClass)) //another class we have enabled? use MDR
+		return cn.ExecuteReader(sql, parameters).ToAnotherClass() as List<T>;
+
+	//fallback to Dapper by default
+	return SqlMapper.Query<T>(cn, sql, parameters).AsList();
+}
+```
+
+When the C# compiler sees two extension methods with the same signature, it uses the one that's "[closer](https://ericlippert.com/2013/12/23/closer-is-better/)" to your code. "Closiness" - is determined by multiple factos - same namespace, same assembly, derived class vs base class etc. etc (go read the article linked). Anyways, adding an override like this will switch your code from using reflection to using source generator, while still keeping awesomeness of Dapper.

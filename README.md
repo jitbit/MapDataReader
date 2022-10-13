@@ -69,4 +69,4 @@ public static List<T> Query<T>(this SqlConnection cn, string sql, object paramet
 }
 ```
 
-When the C# compiler sees two extension methods with the same signature, it uses the one that's "[closer](https://ericlippert.com/2013/12/23/closer-is-better/)" to your code. "Closiness" - is determined by multiple factos - same namespace, same assembly, derived class vs base class etc. etc (go read the article linked). Anyways, adding an override like this will switch your code from using reflection to using source generator, while still keeping awesomeness of Dapper.
+When the C# compiler sees two extension methods with the same signature, it uses the one that's "[closer](https://ericlippert.com/2013/12/23/closer-is-better/)" to your code. "Closiness" - is determined by multiple factos - same namespace, same assembly, derived class vs base class etc. etc (go read the article linked). Anyways, adding an override like this will silently switch your existing code from using Dapper/reflection to using our source generator, while still keeping awesomeness of Dapper and barely touching your code.

@@ -50,6 +50,9 @@ List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyC
 * netstandard 2.0
 * Contributions are very welcome.
 
+---
+
+
 ### P.S. Using it with Dapper
 
 If you're already using the awesome [Dapper ORM](https://github.com/DapperLib/Dapper) by Marc Gravel, Sam Saffron and Nick Craver, this is how you can use our library to speed up DataReader-to-object mapping in Dapper:
@@ -68,5 +71,6 @@ public static List<T> Query<T>(this SqlConnection cn, string sql, object paramet
 	return SqlMapper.Query<T>(cn, sql, parameters).AsList();
 }
 ```
+Why the C# compiler will choose your method over Dapper's?
 
-When the C# compiler sees two extension methods with the same signature, it uses the one that's "[closer](https://ericlippert.com/2013/12/23/closer-is-better/)" to your code. "Closiness" - is determined by multiple factos - same namespace, same assembly, derived class vs base class etc. etc (go read the article linked). Anyways, adding an override like this will silently switch your existing code from using Dapper/reflection to using our source generator, while still keeping awesomeness of Dapper and barely touching your code.
+When the C# compiler sees two extension methods with the same signature, it uses the one that's "[closer](https://ericlippert.com/2013/12/23/closer-is-better/)" to your code. "Closiness" - is determined by multiple factos - same namespace, same assembly, derived class over base class, implementation over interface etc. (go read the article linked above). Adding an override like this will silently switch your existing code from using Dapper/reflection to using our source generator (b/c it uses a more specific connection type and live in your project's namescape), while still keeping the awesomeness of Dapper and you barely have to rewrite any of your code.

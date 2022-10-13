@@ -29,6 +29,8 @@ namespace MapDataReader.Tests
 		public short Shrt	{get;set;}
 		public DateTime BirthDay { get; set; }
 		public DateTime? NUllableBirthDay { get; set; }
+		public TimeSpan Elapsed { get; set; }
+		public Guid MyGuid { get; set; }
 
 
 		public MyEnum Dude { get; set; }
@@ -74,6 +76,12 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(o.LOOOOOoong == 123);
 			o.SetPropertyByName("Shrt", 123);
 			Assert.IsTrue(o.Shrt == 123);
+			o.SetPropertyByName("Elapsed", TimeSpan.FromSeconds(123));
+			Assert.IsTrue(o.Elapsed == TimeSpan.FromSeconds(123));
+
+			var guid = Guid.NewGuid();
+			o.SetPropertyByName("MyGuid", guid);
+			Assert.IsTrue(o.MyGuid == guid);
 
 			var dt = new DateTime(2022, 09, 09);
 			o.SetPropertyByName("BirthDay", dt);

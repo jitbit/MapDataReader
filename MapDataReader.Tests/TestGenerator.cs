@@ -25,6 +25,8 @@ namespace MyCode
 		public int Size {get;set;}
 		public bool Enabled {get;set;}
 		public System.DateTime Created {get;set;}
+		public System.DateTimeOffset Offset {get;set;}
+		public decimal Price {get;set;}
 	}
 }
 ";
@@ -34,6 +36,8 @@ namespace MyCode
 			Assert.IsTrue(src.Contains(@"""Size"", StringComparison.OrdinalIgnoreCase)) { target.Size = (int)Convert.ChangeType(value, typeof(int)); return;"));
 			Assert.IsTrue(src.Contains(@"""Enabled"", StringComparison.OrdinalIgnoreCase)) { target.Enabled = (bool)Convert.ChangeType(value, typeof(bool)); return;"));
 			Assert.IsTrue(src.Contains(@"""Created"", StringComparison.OrdinalIgnoreCase)) { target.Created = (global::System.DateTime)Convert.ChangeType(value, typeof(global::System.DateTime)); return;"));
+			Assert.IsTrue(src.Contains(@"""Offset"", StringComparison.OrdinalIgnoreCase)) { target.Offset = (global::System.DateTimeOffset)Convert.ChangeType(value, typeof(global::System.DateTimeOffset)); return;"));
+			Assert.IsTrue(src.Contains(@"""Price"", StringComparison.OrdinalIgnoreCase)) { target.Price = (decimal)Convert.ChangeType(value, typeof(decimal)); return;"));
 		}
 
 		[TestMethod]
@@ -87,6 +91,10 @@ public class A
 	public byte[] B {get; set; }
 	public string[] C {get; set; }
 	public int[] D {get; set; }
+	public bool[] E {get; set; }
+	public char[] F {get; set; }
+	public System.DateTime[] G {get; set; }
+	public long[] H {get; set; }
 }
 ";
 			var src = GetAndCheckOutputSource(userSource);
@@ -94,6 +102,10 @@ public class A
 			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (byte[])value;"));
 			Assert.IsTrue(src.Contains(@"""C"", StringComparison.OrdinalIgnoreCase)) { target.C = (string[])value;"));
 			Assert.IsTrue(src.Contains(@"""D"", StringComparison.OrdinalIgnoreCase)) { target.D = (int[])value;"));
+			Assert.IsTrue(src.Contains(@"""E"", StringComparison.OrdinalIgnoreCase)) { target.E = (bool[])value;"));
+			Assert.IsTrue(src.Contains(@"""F"", StringComparison.OrdinalIgnoreCase)) { target.F = (char[])value;"));
+			Assert.IsTrue(src.Contains(@"""G"", StringComparison.OrdinalIgnoreCase)) { target.G = (global::System.DateTime[])"));
+			Assert.IsTrue(src.Contains(@"""H"", StringComparison.OrdinalIgnoreCase)) { target.H = (long[])value;"));
 		}
 
 		[TestMethod]

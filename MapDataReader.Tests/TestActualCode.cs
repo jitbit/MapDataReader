@@ -27,14 +27,16 @@ namespace MapDataReader.Tests
 		public nint ImBored { get; set; }
 		public long LOOOOOoong { get; set; }
 		public short Shrt	{get;set;}
+		public DateTime BirthDay { get; set; }
+		public DateTime? NUllableBirthDay { get; set; }
 
 
-	public MyEnum Dude { get; set; }
+		public MyEnum Dude { get; set; }
 		public string Name { get; set; }
 	}
 
 	[TestClass]
-	public class UnitTestActualCode
+	public class TestActualCode
 	{
 		[TestMethod]
 		public void TestPrimitiveTypesAssign()
@@ -72,6 +74,12 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(o.LOOOOOoong == 123);
 			o.SetPropertyByName("Shrt", 123);
 			Assert.IsTrue(o.Shrt == 123);
+
+			var dt = new DateTime(2022, 09, 09);
+			o.SetPropertyByName("BirthDay", dt);
+			Assert.IsTrue(o.BirthDay == dt);
+			o.SetPropertyByName("NUllableBirthDay", dt);
+			Assert.IsTrue(o.NUllableBirthDay == dt);
 		}
 
 		[TestMethod]

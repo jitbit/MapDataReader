@@ -8,7 +8,7 @@ using System.Reflection;
 namespace MapDataReader.Tests
 {
 	[TestClass]
-	public class UnitTest1
+	public class TestGenerator
 	{
 		[TestMethod]
 		public void TestGeneral()
@@ -24,6 +24,7 @@ namespace MyCode
 		public string Name {get;set;}
 		public int Size {get;set;}
 		public bool Enabled {get;set;}
+		public System.DateTime Created {get;set;}
 	}
 }
 ";
@@ -32,6 +33,7 @@ namespace MyCode
 			Assert.IsTrue(src.Contains(@"""Name"", StringComparison.OrdinalIgnoreCase)) { target.Name = (string)value;"));
 			Assert.IsTrue(src.Contains(@"""Size"", StringComparison.OrdinalIgnoreCase)) { target.Size = (int)Convert.ChangeType(value, typeof(int)); return;"));
 			Assert.IsTrue(src.Contains(@"""Enabled"", StringComparison.OrdinalIgnoreCase)) { target.Enabled = (bool)Convert.ChangeType(value, typeof(bool)); return;"));
+			Assert.IsTrue(src.Contains(@"""Created"", StringComparison.OrdinalIgnoreCase)) { target.Created = (global::System.DateTime)Convert.ChangeType(value, typeof(global::System.DateTime)); return;"));
 		}
 
 		[TestMethod]
@@ -92,6 +94,23 @@ public class A
 			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (byte[])value;"));
 			Assert.IsTrue(src.Contains(@"""C"", StringComparison.OrdinalIgnoreCase)) { target.C = (string[])value;"));
 			Assert.IsTrue(src.Contains(@"""D"", StringComparison.OrdinalIgnoreCase)) { target.D = (int[])value;"));
+		}
+
+		[TestMethod]
+		public void TestNullable()
+		{
+			string userSource = @"
+using MapDataReader;
+
+[GenerateDataReaderMapper]
+public class A
+{
+	public int? B {get; set; }
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+
+			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (int?)value;"));
 		}
 
 		[TestMethod]

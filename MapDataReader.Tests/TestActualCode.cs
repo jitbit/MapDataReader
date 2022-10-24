@@ -35,6 +35,8 @@ namespace MapDataReader.Tests
 
 		public MyEnum Dude { get; set; }
 		public string Name { get; set; }
+
+		public int GetOnly { get; } = 123; //property without public setter!
 	}
 
 	[TestClass]
@@ -88,6 +90,8 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(o.BirthDay == dt);
 			o.SetPropertyByName("NUllableBirthDay", dt);
 			Assert.IsTrue(o.NUllableBirthDay == dt);
+
+			o.SetPropertyByName("GetOnly", 321); //should not throw any exception, even though this property is not settable
 		}
 
 		[TestMethod]

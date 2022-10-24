@@ -61,11 +61,11 @@ namespace MapDataReader
 									}
 									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})(int)Convert.ChangeType(value, typeof(int)); return; }}"; //pre-convert enums to int first (after unboxing, see below)
+										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
 									}
 									else //primitive types. use Convert.ChangeType before casting. To support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
+										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
 									}
 								}).StringConcat("\r\n") } 
 

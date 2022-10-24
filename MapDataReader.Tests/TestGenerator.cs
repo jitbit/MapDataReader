@@ -33,11 +33,11 @@ namespace MyCode
 			var src = GetAndCheckOutputSource(userSource);
 
 			Assert.IsTrue(src.Contains(@"""Name"", StringComparison.OrdinalIgnoreCase)) { target.Name = (string)value;"));
-			Assert.IsTrue(src.Contains(@"""Size"", StringComparison.OrdinalIgnoreCase)) { target.Size = (int)Convert.ChangeType(value, typeof(int)); return;"));
-			Assert.IsTrue(src.Contains(@"""Enabled"", StringComparison.OrdinalIgnoreCase)) { target.Enabled = (bool)Convert.ChangeType(value, typeof(bool)); return;"));
-			Assert.IsTrue(src.Contains(@"""Created"", StringComparison.OrdinalIgnoreCase)) { target.Created = (global::System.DateTime)Convert.ChangeType(value, typeof(global::System.DateTime)); return;"));
-			Assert.IsTrue(src.Contains(@"""Offset"", StringComparison.OrdinalIgnoreCase)) { target.Offset = (global::System.DateTimeOffset)Convert.ChangeType(value, typeof(global::System.DateTimeOffset)); return;"));
-			Assert.IsTrue(src.Contains(@"""Price"", StringComparison.OrdinalIgnoreCase)) { target.Price = (decimal)Convert.ChangeType(value, typeof(decimal)); return;"));
+			Assert.IsTrue(src.Contains(@"""Size"", StringComparison.OrdinalIgnoreCase)) { target.Size = value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int)); return;"));
+			Assert.IsTrue(src.Contains(@"""Enabled"", StringComparison.OrdinalIgnoreCase)) { target.Enabled = value.GetType() == typeof(bool) ? (bool)value : (bool)Convert.ChangeType(value, typeof(bool)); return;"));
+			Assert.IsTrue(src.Contains(@"""Created"", StringComparison.OrdinalIgnoreCase)) { target.Created = value.GetType() == typeof(global::System.DateTime) ? (global::System.DateTime)value : (global::System.DateTime)Convert.ChangeType(value, typeof(global::System.DateTime)); return;"));
+			Assert.IsTrue(src.Contains(@"""Offset"", StringComparison.OrdinalIgnoreCase)) { target.Offset = value.GetType() == typeof(global::System.DateTimeOffset) ? (global::System.DateTimeOffset)value : (global::System.DateTimeOffset)Convert.ChangeType(value, typeof(global::System.DateTimeOffset)); return;"));
+			Assert.IsTrue(src.Contains(@"""Price"", StringComparison.OrdinalIgnoreCase)) { target.Price = value.GetType() == typeof(decimal) ? (decimal)value : (decimal)Convert.ChangeType(value, typeof(decimal)); return;"));
 		}
 
 		[TestMethod]

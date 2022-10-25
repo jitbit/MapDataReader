@@ -39,6 +39,9 @@ namespace MapDataReader.Tests
 		public int GetOnly { get; } = 123; //property without public setter!
 
 		public byte[] ByeArray { get; set; }
+		public int[] IntArray { get; set; }
+		public string[] StringArray { get; set; }
+		public long[] LongArray { get; set; }
 	}
 
 	[TestClass]
@@ -92,10 +95,17 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(o.BirthDay == dt);
 			o.SetPropertyByName("NUllableBirthDay", dt);
 			Assert.IsTrue(o.NUllableBirthDay == dt);
-			o.SetPropertyByName("ByeArray", new byte[3] { 1, 2, 3 });
-			Assert.IsTrue(o.ByeArray.SequenceEqual(new byte[3] { 1, 2, 3 }));
 
 			o.SetPropertyByName("GetOnly", 321); //should not throw any exception, even though this property is not settable
+
+			o.SetPropertyByName("ByeArray", new byte[3] { 1, 2, 3 });
+			Assert.IsTrue(o.ByeArray.SequenceEqual(new byte[3] { 1, 2, 3 }));
+			o.SetPropertyByName("IntArray", new int[3] { 1, 2, 3 });
+			Assert.IsTrue(o.IntArray.SequenceEqual(new int[3] { 1, 2, 3 }));
+			o.SetPropertyByName("StringArray", new [] { "1", "2", "3" });
+			Assert.IsTrue(o.StringArray.SequenceEqual(new[] { "1", "2", "3" }));
+			o.SetPropertyByName("LongArray", new long[3] { 1, 2, 3 });
+			Assert.IsTrue(o.LongArray.SequenceEqual(new long[3] { 1, 2, 3 }));
 		}
 
 		[TestMethod]

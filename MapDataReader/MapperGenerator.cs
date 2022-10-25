@@ -57,7 +57,7 @@ namespace MapDataReader
 									var pTypeName = p.Type.FullName();
 									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
 									{
-										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})value; return; }}";
+										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = value as {pTypeName}; return; }}";
 									}
 									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{

@@ -32,7 +32,7 @@ namespace MyCode
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"""Name"", StringComparison.OrdinalIgnoreCase)) { target.Name = (string)value;"));
+			Assert.IsTrue(src.Contains(@"""Name"", StringComparison.OrdinalIgnoreCase)) { target.Name = value as string;"));
 			Assert.IsTrue(src.Contains(@"""Size"", StringComparison.OrdinalIgnoreCase)) { target.Size = value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int)); return;"));
 			Assert.IsTrue(src.Contains(@"""Enabled"", StringComparison.OrdinalIgnoreCase)) { target.Enabled = value.GetType() == typeof(bool) ? (bool)value : (bool)Convert.ChangeType(value, typeof(bool)); return;"));
 			Assert.IsTrue(src.Contains(@"""Created"", StringComparison.OrdinalIgnoreCase)) { target.Created = value.GetType() == typeof(global::System.DateTime) ? (global::System.DateTime)value : (global::System.DateTime)Convert.ChangeType(value, typeof(global::System.DateTime)); return;"));
@@ -76,7 +76,7 @@ public class A
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (string)value;"));
+			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = value as string;"));
 		}
 
 		[TestMethod]
@@ -99,13 +99,13 @@ public class A
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (byte[])value;"));
-			Assert.IsTrue(src.Contains(@"""C"", StringComparison.OrdinalIgnoreCase)) { target.C = (string[])value;"));
-			Assert.IsTrue(src.Contains(@"""D"", StringComparison.OrdinalIgnoreCase)) { target.D = (int[])value;"));
-			Assert.IsTrue(src.Contains(@"""E"", StringComparison.OrdinalIgnoreCase)) { target.E = (bool[])value;"));
-			Assert.IsTrue(src.Contains(@"""F"", StringComparison.OrdinalIgnoreCase)) { target.F = (char[])value;"));
-			Assert.IsTrue(src.Contains(@"""G"", StringComparison.OrdinalIgnoreCase)) { target.G = (global::System.DateTime[])"));
-			Assert.IsTrue(src.Contains(@"""H"", StringComparison.OrdinalIgnoreCase)) { target.H = (long[])value;"));
+			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = value as byte[];"));
+			Assert.IsTrue(src.Contains(@"""C"", StringComparison.OrdinalIgnoreCase)) { target.C = value as string[];"));
+			Assert.IsTrue(src.Contains(@"""D"", StringComparison.OrdinalIgnoreCase)) { target.D = value as int[];"));
+			Assert.IsTrue(src.Contains(@"""E"", StringComparison.OrdinalIgnoreCase)) { target.E = value as bool[];"));
+			Assert.IsTrue(src.Contains(@"""F"", StringComparison.OrdinalIgnoreCase)) { target.F = value as char[];"));
+			Assert.IsTrue(src.Contains(@"""G"", StringComparison.OrdinalIgnoreCase)) { target.G = value as global::System.DateTime[]"));
+			Assert.IsTrue(src.Contains(@"""H"", StringComparison.OrdinalIgnoreCase)) { target.H = value as long[];"));
 		}
 
 		[TestMethod]
@@ -122,7 +122,7 @@ public class A
 ";
 			var src = GetAndCheckOutputSource(userSource);
 
-			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = (int?)value;"));
+			Assert.IsTrue(src.Contains(@"""B"", StringComparison.OrdinalIgnoreCase)) { target.B = value as int?;"));
 		}
 
 		[TestMethod]

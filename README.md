@@ -83,4 +83,6 @@ While reflection-based ORMs like Dapper cache the reflection objects and are *al
 
 Or - if you run your ASP.NET Core app on IIS - this causes 503 errors during IIS recycles, see https://github.com/dotnet/aspnetcore/issues/41340 faster app startup helps a lot.
 
-Also, reflection-caching causes memory pressure becasue of the concurrent dictionaries used for caching. Etc.
+Also, reflection-caching causes memory pressure becasue of the concurrent dictionaries used for caching.
+
+And even with caching, a simple straightforward code like `obj.x = y` will always be faster then looking up a cached delegate in a thousands-long dictionary by a string key and invoking it via reflection.

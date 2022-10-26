@@ -3,6 +3,7 @@ Super fast mapping DataReader to a strongly typed object. High performance, ligh
 
 [![.NET](https://github.com/jitbit/MapDataReader/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jitbit/MapDataReader/actions/workflows/dotnet.yml)
 [![Nuget](https://img.shields.io/nuget/v/MapDataReader)](https://www.nuget.org/packages/MapDataReader/)
+![Net stanrdard 2.0](https://img.shields.io/badge/netstandard-2.0-brightgreen)
 
 ## Benchmarks
 
@@ -19,7 +20,7 @@ Super fast mapping DataReader to a strongly typed object. High performance, ligh
 Install-Package MapDataReader
 ```
 
-## Usage
+## Usage with `IDataReader`
 
 ```csharp
 using MapDataReader;
@@ -39,21 +40,30 @@ List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyC
 //.ExecuteReader is just a helper method from Dapper ORM, you're free to use other ways to create a datareader
 ```
 
-## Some notes
+Some notes for the above
 
 * The `ToMyClass()` method above - is an `IDataReader` extension method generated at compile time. You can even "go to definition" in Visual Studio and examine its code.
-* The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#).
+* The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#). If you find a prettier way - please contribute!
 * Maps properies with public setters only.
 * The datareader is being closed after mapping, so don't reuse it.
 * Supports `enum` properties based on `int` and other implicit casting (sometimes a DataReader may decide to return `byte` for small integer database value, and it maps to `int` perfectly via some unboxing magic)
 * Properly maps `DBNull` to `null`.
 * Complex-type properties may not work.
-* netstandard 2.0
-* Contributions are very welcome.
+
+## Bonus API: `SetPropertyByName`
+
+This package also adds a super fast `SetPropertyByName` extension method generated at compile time for your class.
+
+Usage:
+
+```csharp
+var x = new MyClass();
+x.SetPropertyByName("Size", 42); //20X faster than using reflection
+```
 
 ---
 
-### Bonus: Using it with Dapper
+## Tip: Using it with Dapper
 
 If you're already using the awesome [Dapper ORM](https://github.com/DapperLib/Dapper) by Marc Gravel, Sam Saffron and Nick Craver, this is how you can use our library to speed up DataReader-to-object mapping in Dapper:
 

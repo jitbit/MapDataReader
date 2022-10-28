@@ -135,13 +135,13 @@ namespace MapDataReader.Tests
 		[TestMethod]
 		public void TestDatatReader()
 		{
+			//create datatable with test data
 			var dt = new DataTable();
 			dt.Columns.AddRange(new[] { new DataColumn("ID", typeof(int)), new DataColumn("Name", typeof(string)), new DataColumn("LaBoolissimmo", typeof(bool)) });
 			dt.Rows.Add(123, "ggg", true);
 			dt.Rows.Add(3, "fgdk", false);
-			var dr = dt.CreateDataReader();
 
-			var list = dr.ToMyObject();
+			var list = dt.CreateDataReader().ToMyObject();
 
 			Assert.IsTrue(list[0].Id == 123);
 			Assert.IsTrue(list[0].Name == "ggg");

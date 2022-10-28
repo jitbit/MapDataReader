@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -128,6 +130,25 @@ namespace MapDataReader.Tests
 			var o = new MyObject();
 			o.SetPropertyByName("Name", "awsdkljfghsldkgjh");
 			Assert.IsTrue(o.Name == "awsdkljfghsldkgjh");
+		}
+
+		[TestMethod]
+		public void TestDatatReader()
+		{
+			var dt = new DataTable();
+			dt.Columns.AddRange(new[] { new DataColumn("ID", typeof(int)), new DataColumn("Name", typeof(string)), new DataColumn("LaBoolissimmo", typeof(bool)) });
+			dt.Rows.Add(123, "ggg", true);
+			dt.Rows.Add(3, "fgdk", false);
+			var dr = dt.CreateDataReader();
+
+			var list = dr.ToMyObject();
+
+			Assert.IsTrue(list[0].Id == 123);
+			Assert.IsTrue(list[0].Name == "ggg");
+			Assert.IsTrue(list[0].LaBoolissimmo == true);
+			Assert.IsTrue(list[1].Id == 3);
+			Assert.IsTrue(list[1].Name == "fgdk");
+			Assert.IsTrue(list[1].LaBoolissimmo == false);
 		}
 	}
 }

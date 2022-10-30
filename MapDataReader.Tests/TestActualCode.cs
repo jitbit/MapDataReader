@@ -161,6 +161,18 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(o.Id == 123);
 			Assert.IsTrue(o.Name == "blahblah");
 		}
+
+		[TestMethod]
+		public void TestWrongProperty()
+		{
+			var o = new MyObject();
+			o.SetPropertyByName("NonExistingProperttyName", 123); //should not throw exception
+
+			//now test wrong type
+			o.Name = "lalala";
+			o.SetPropertyByName("Name", 123); //try to assign string prop to int
+			Assert.IsTrue(o.Name == null); //wrong type. should be null
+		}
 	}
 
 	public class BaseClass

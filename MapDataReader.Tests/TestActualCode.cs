@@ -150,5 +150,27 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(list[1].Name == "fgdk");
 			Assert.IsTrue(list[1].LaBoolissimmo == false);
 		}
+
+		[TestMethod]
+		public void TestBaseClassAssign()
+		{
+			var o = new ChildClass();
+			o.SetPropertyByName("Id", 123);
+			o.SetPropertyByName("Name", "blahblah");
+
+			Assert.IsTrue(o.Id == 123);
+			Assert.IsTrue(o.Name == "blahblah");
+		}
+	}
+
+	public class BaseClass
+	{
+		public int Id { get; set; }
+	}
+
+	[GenerateDataReaderMapper]
+	public class ChildClass : BaseClass
+	{
+		public string Name { get; set; }
 	}
 }

@@ -33,31 +33,34 @@ namespace MapDataReader
 					#pragma warning disable 8019 //disable 'unnecessary using directive' warning
 					using System;
 					using System.Data;
+					using System.Linq;
 					using System.Collections.Generic; //to support List<T> etc
 
 					namespace MapDataReader
 					{{
 						public static partial class MapperExtensions
 						{{
-
 							public static void SetPropertyByName(this {typeNodeSymbol.FullName()} target, string name, object value)
 							{{
-								if (value==null) return; //don't asssign null-values. not needed for datareader initialization anyway
+								SetPropertyByName(target, MapperGenerator.GetDeterministicHashCode(name), value);
+							}}
 
+							private static void SetPropertyByName(this {typeNodeSymbol.FullName()} target, int namehash, object value)
+							{{
 								{"\r\n" + allProperties.Select(p =>
 								{
 									var pTypeName = p.Type.FullName();
 									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
 									{
-										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = value as {pTypeName}; return; }}";
+										return $@"	if (namehash == {GetDeterministicHashCode(p.Name)}) {{ target.{p.Name} = value as {pTypeName}; return; }}";
 									}
 									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
+										return $@"	if (value != null && namehash == {GetDeterministicHashCode(p.Name)}) {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
 									}
 									else //primitive types. use Convert.ChangeType before casting. To support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (name.Equals(""{p.Name}"", StringComparison.OrdinalIgnoreCase)) {{ target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
+										return $@"	if (value != null && namehash == {GetDeterministicHashCode(p.Name)}) {{ target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
 									}
 								}).StringConcat("\r\n") } 
 
@@ -71,17 +74,23 @@ namespace MapDataReader
 							public static List<{typeNodeSymbol.FullName()}> To{typeNode.Identifier}(this IDataReader dr)
 							{{
 								var list = new List<{typeNodeSymbol.FullName()}>();
-								while(dr.Read())
+								
+								if (dr.Read())
 								{{
-									var result = new {typeNodeSymbol.FullName()}();
-									for (int i = 0; i < dr.FieldCount; i++)
+									int[] columnNameHashes = Enumerable.Range(0, dr.FieldCount).Select(i => MapperGenerator.GetDeterministicHashCode(dr.GetName(i))).ToArray();
+									do
 									{{
-										var name = dr.GetName(i);
-										var value = dr[i];
-										if (value is DBNull) value = null;
-										SetPropertyByName(result, name, value);
-									}}
-									list.Add(result);
+										var result = new {typeNodeSymbol.FullName()}();
+										int i = 0;
+										foreach (var col in columnNameHashes)
+										{{
+											var value = dr[i];
+											if (value is DBNull) value = null;
+											SetPropertyByName(result, col, value);
+											i++;
+										}}
+										list.Add(result);
+									}} while (dr.Read());
 								}}
 								dr.Close();
 								return list;
@@ -99,6 +108,28 @@ namespace MapDataReader
 		public void Initialize(GeneratorInitializationContext context)
 		{
 			context.RegisterForSyntaxNotifications(() => new TargetTypeTracker());
+		}
+
+		/// <summary>
+		/// returns case-insensitive (same hash for upper/lower) and "deterministic" hash (same with every run)
+		/// </summary>
+		public static int GetDeterministicHashCode(string str)
+		{
+			unchecked
+			{
+				int hash1 = (5381 << 16) + 5381;
+				int hash2 = hash1;
+
+				for (int i = 0; i < str.Length; i += 2)
+				{
+					hash1 = ((hash1 << 5) + hash1) ^ Char.ToUpperInvariant(str[i]);
+					if (i == str.Length - 1)
+						break;
+					hash2 = ((hash2 << 5) + hash2) ^ Char.ToUpperInvariant(str[i + 1]);
+				}
+
+				return hash1 + (hash2 * 1566083941);
+			}
 		}
 	}
 

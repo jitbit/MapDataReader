@@ -61,6 +61,12 @@ var x = new MyClass();
 x.SetPropertyByName("Size", 42); //20X faster than using reflection
 ```
 
+|                  Method |      Mean |     Error |    StdDev | Allocated |
+|------------------------ |----------:|----------:|----------:|----------:|
+|       SetPropReflection | 98.294 ns | 5.7443 ns | 0.3149 ns |         - |
+| SetPropReflectionCached | 71.137 ns | 1.9736 ns | 0.1082 ns |         - |
+|    SetPropMapDataReader |  4.711 ns | 0.4640 ns | 0.0254 ns |         - |
+
 ---
 
 ## Tip: Using it with Dapper

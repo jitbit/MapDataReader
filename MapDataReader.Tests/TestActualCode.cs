@@ -137,18 +137,39 @@ namespace MapDataReader.Tests
 		{
 			//create datatable with test data
 			var dt = new DataTable();
-			dt.Columns.AddRange(new[] { new DataColumn("ID", typeof(int)), new DataColumn("Name", typeof(string)), new DataColumn("LaBoolissimmo", typeof(bool)) });
-			dt.Rows.Add(123, "ggg", true);
-			dt.Rows.Add(3, "fgdk", false);
+			dt.Columns.AddRange(new[] {
+				new DataColumn("ID", typeof(int)),
+				new DataColumn("Name", typeof(string)),
+				new DataColumn("LaBoolissimmo", typeof(bool)),
+				new DataColumn("Floating", typeof(float)),
+				new DataColumn("LOOOOOoong", typeof(long)),
+				new DataColumn("BirthDay", typeof(DateTime)),
+				new DataColumn("Elapsed", typeof(TimeSpan)),
+			});
+			var date = new DateTime(2022, 09, 09);
+			dt.Rows.Add(123, "ggg", true, 3213, 123, date, TimeSpan.FromSeconds(123));
+			dt.Rows.Add(3, "fgdk", false, 11123, 321, date, TimeSpan.FromSeconds(123));
 
 			var list = dt.CreateDataReader().ToMyObject();
+
+			Assert.IsTrue(list.Count == 2);
 
 			Assert.IsTrue(list[0].Id == 123);
 			Assert.IsTrue(list[0].Name == "ggg");
 			Assert.IsTrue(list[0].LaBoolissimmo == true);
+			Assert.IsTrue(list[0].Floating == 3213);
+			Assert.IsTrue(list[0].LOOOOOoong == 123);
+			Assert.IsTrue(list[0].BirthDay == date);
+			Assert.IsTrue(list[0].Elapsed == TimeSpan.FromSeconds(123));
+
+
 			Assert.IsTrue(list[1].Id == 3);
 			Assert.IsTrue(list[1].Name == "fgdk");
 			Assert.IsTrue(list[1].LaBoolissimmo == false);
+			Assert.IsTrue(list[1].Floating == 11123);
+			Assert.IsTrue(list[1].LOOOOOoong == 321);
+			Assert.IsTrue(list[1].BirthDay == date);
+			Assert.IsTrue(list[1].Elapsed == TimeSpan.FromSeconds(123));
 		}
 
 		[TestMethod]

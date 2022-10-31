@@ -102,3 +102,14 @@ Or - if you run your ASP.NET Core app on IIS - this causes 503 errors during IIS
 Also, reflection-caching causes memory pressure becasue of the concurrent dictionaries used for caching.
 
 And even with caching, a simple straightforward code like `obj.x = y` will always be faster then looking up a cached delegate in a thousands-long dictionary by a string key and invoking it via reflection.
+
+Even if you don't care for the startup time of your app, `MapDataReader` is still 5-7% faster than `Dapper` (note - we're only using Dapper's datareader parser in this bench, without command-test mapping dictionaries etc)
+
+|                         Method |          Mean |         Error |       StdDev |   Gen0 |   Gen1 | Allocated |
+|------------------------------- |--------------:|--------------:|-------------:|-------:|-------:|----------:|
+|              SetPropReflection |     101.94 ns |      9.443 ns |     0.518 ns |      - |      - |         - |
+|        SetPropReflectionCached |      70.01 ns |      4.518 ns |     0.248 ns |      - |      - |         - |
+|           SetPropMapDataReader |      19.27 ns |      3.195 ns |     0.175 ns |      - |      - |         - |
+|         MapDatareaderViaDapper | 142,094.70 ns |  8,013.663 ns |   439.256 ns | 9.0332 | 1.2207 |   57472 B |
+| MapDataReaderViaMapaDataReader | 133,223.32 ns | 28,679.198 ns | 1,572.004 ns | 9.0332 | 1.2207 |   57624 B |
+

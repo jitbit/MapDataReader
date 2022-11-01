@@ -11,7 +11,8 @@ namespace MapDataReader.Tests
 	public enum MyEnum
 	{
 		FirstDude,
-		SecondDude
+		SecondDude,
+		Third,
 	}
 
 	[GenerateDataReaderMapper]
@@ -120,8 +121,8 @@ namespace MapDataReader.Tests
 			o.SetPropertyByName("Dude", 1);
 			Assert.IsTrue(o.Dude == MyEnum.SecondDude);
 
-			o.SetPropertyByName("Dude", (byte)1); //let's shove a BYTE in there!
-			Assert.IsTrue(o.Dude == MyEnum.SecondDude); //eat this, boxing!!
+			o.SetPropertyByName("Dude", (byte)2); //let's shove a BYTE in there!
+			Assert.IsTrue(o.Dude == MyEnum.Third); //eat this, boxing!!
 		}
 
 		[TestMethod]
@@ -145,10 +146,11 @@ namespace MapDataReader.Tests
 				new DataColumn("LOOOOOoong", typeof(long)),
 				new DataColumn("BirthDay", typeof(DateTime)),
 				new DataColumn("Elapsed", typeof(TimeSpan)),
+				new DataColumn("ByeArray", typeof(byte[])),
 			});
 			var date = new DateTime(2022, 09, 09);
-			dt.Rows.Add(123, "ggg", true, 3213, 123, date, TimeSpan.FromSeconds(123));
-			dt.Rows.Add(3, "fgdk", false, 11123, 321, date, TimeSpan.FromSeconds(123));
+			dt.Rows.Add(123, "ggg", true, 3213, 123, date, TimeSpan.FromSeconds(123), new byte[] { 3, 2, 1 });
+			dt.Rows.Add(3, "fgdk", false, 11123, 321, date, TimeSpan.FromSeconds(123), new byte[] { 5, 6, 7, 8 });
 
 			var list = dt.CreateDataReader().ToMyObject();
 
@@ -161,6 +163,7 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(list[0].LOOOOOoong == 123);
 			Assert.IsTrue(list[0].BirthDay == date);
 			Assert.IsTrue(list[0].Elapsed == TimeSpan.FromSeconds(123));
+			Assert.IsTrue(list[0].ByeArray.SequenceEqual(new byte[3] { 3, 2, 1 }));
 
 
 			Assert.IsTrue(list[1].Id == 3);
@@ -170,6 +173,7 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(list[1].LOOOOOoong == 321);
 			Assert.IsTrue(list[1].BirthDay == date);
 			Assert.IsTrue(list[1].Elapsed == TimeSpan.FromSeconds(123));
+			Assert.IsTrue(list[1].ByeArray.SequenceEqual(new byte[4] { 5, 6, 7, 8 }));
 		}
 
 		[TestMethod]
@@ -207,3 +211,4 @@ namespace MapDataReader.Tests
 		public string Name { get; set; }
 	}
 }
+

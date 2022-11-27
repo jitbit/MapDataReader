@@ -63,10 +63,10 @@ namespace MapDataReader.Benchmarks
 		{
 			//create datatable with test data
 			_dt = new DataTable();
-			_dt.Columns.AddRange(new[] { new DataColumn("String1", typeof(string)), new DataColumn("String2", typeof(string)), new DataColumn("Int", typeof(string)) });
+			_dt.Columns.AddRange(new[] { new DataColumn("String1", typeof(string)), new DataColumn("String2", typeof(string)), new DataColumn("String3", typeof(string)), new DataColumn("Int", typeof(int)), new DataColumn("Int2", typeof(int)) });
 			for (int i = 0; i < 1000; i++)
 			{
-				_dt.Rows.Add("xxx", "yyy", 123);
+				_dt.Rows.Add("xxx", "yyy", "zzz", 123, 321);
 			}
 		}
 	}
@@ -76,6 +76,8 @@ namespace MapDataReader.Benchmarks
 	{
 		public string String1 { get; set; }
 		public string String2 { get; set; }
+		public string String3 { get; set; }
 		public string Int { get; set; }
+		public string Int2 { get; set; }
 	}
 }

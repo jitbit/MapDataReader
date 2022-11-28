@@ -174,6 +174,22 @@ namespace MapDataReader.Tests
 			Assert.IsTrue(list[1].BirthDay == date);
 			Assert.IsTrue(list[1].Elapsed == TimeSpan.FromSeconds(123));
 			Assert.IsTrue(list[1].ByeArray.SequenceEqual(new byte[4] { 5, 6, 7, 8 }));
+
+			//now create datatable with different column order and test on the same code generator!!!
+			var dt2 = new DataTable();
+			dt2.Columns.AddRange(new[] {
+				new DataColumn("LaBoolissimmo", typeof(bool)),
+				new DataColumn("Name", typeof(string)),
+				new DataColumn("ID", typeof(int)),
+			});
+
+			dt2.Rows.Add(true, "alex", 123);
+
+			list = dt2.CreateDataReader().ToMyObject(); //should not throw exception
+
+			Assert.IsTrue(list[0].Id == 123);
+			Assert.IsTrue(list[0].Name == "alex");
+			Assert.IsTrue(list[0].LaBoolissimmo == true);
 		}
 
 		[TestMethod]

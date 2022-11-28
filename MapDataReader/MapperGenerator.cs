@@ -70,7 +70,6 @@ namespace MapDataReader
 				if (typeNodeSymbol.InstanceConstructors.Any(c => !c.Parameters.Any())) //has a constructor without parameters?
 				{
 					src += $@"
-							private static int[] _columnNameHashes{typeNode.Identifier} = null;
 
 							public static List<{typeNodeSymbol.FullName()}> To{typeNode.Identifier}(this IDataReader dr)
 							{{
@@ -78,14 +77,12 @@ namespace MapDataReader
 								
 								if (dr.Read())
 								{{
-									if(_columnNameHashes{typeNode.Identifier} == null)
-										_columnNameHashes{typeNode.Identifier} = Enumerable.Range(0, dr.FieldCount).Select(i => MapperGenerator.GetDeterministicHashCode(dr.GetName(i))).ToArray();
-
+									int[] columnNameHashes = Enumerable.Range(0, dr.FieldCount).Select(i => MapperGenerator.GetDeterministicHashCode(dr.GetName(i))).ToArray();
 									do
 									{{
 										var result = new {typeNodeSymbol.FullName()}();
 										int i = 0;
-										foreach (var col in _columnNameHashes{typeNode.Identifier})
+										foreach (var col in columnNameHashes)
 										{{
 											var value = dr[i];
 											if (value is DBNull) value = null;

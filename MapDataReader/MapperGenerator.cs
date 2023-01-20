@@ -42,7 +42,7 @@ namespace MapDataReader
 						{{
 							public static void SetPropertyByName(this {typeNodeSymbol.FullName()} target, string name, object value)
 							{{
-								SetPropertyByUpperName(target, name.ToUpper(), value);
+								SetPropertyByUpperName(target, name.ToUpperInvariant(), value);
 							}}
 
 							private static void SetPropertyByUpperName(this {typeNodeSymbol.FullName()} target, string name, object value)
@@ -52,15 +52,15 @@ namespace MapDataReader
 									var pTypeName = p.Type.FullName();
 									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
 									{
-										return $@"	if (name == ""{p.Name.ToUpper()}"") {{ target.{p.Name} = value as {pTypeName}; return; }}";
+										return $@"	if (name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = value as {pTypeName}; return; }}";
 									}
 									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (value != null && name == ""{p.Name.ToUpper()}"") {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
+										return $@"	if (value != null && name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
 									}
 									else //primitive types. use Convert.ChangeType before casting. To support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (value != null && name == ""{p.Name.ToUpper()}"") {{ target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
+										return $@"	if (value != null && name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
 									}
 								}).StringConcat("\r\n") } 
 
@@ -77,7 +77,7 @@ namespace MapDataReader
 								
 								if (dr.Read())
 								{{
-									string[] columnNames = Enumerable.Range(0, dr.FieldCount).Select(i => dr.GetName(i).ToUpper()).ToArray();
+									string[] columnNames = Enumerable.Range(0, dr.FieldCount).Select(i => dr.GetName(i).ToUpperInvariant()).ToArray();
 									do
 									{{
 										var result = new {typeNodeSymbol.FullName()}();

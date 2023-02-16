@@ -44,11 +44,6 @@ Some notes for the above
 
 * The `ToMyClass()` method above - is an `IDataReader` extension method generated at compile time. You can even "go to definition" in Visual Studio and examine its code.
 * The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#). If you find a prettier way - please contribute!
-* The mapper compares property names with pre-calculated hashes, like this
-	```csharp
-	if (namehash == -1150196469) { target.Name = value as string; return; }
-	```
-	to prevent expensive string comparisons
 * Maps properies with public setters only.
 * The datareader is being closed after mapping, so don't reuse it.
 * Supports `enum` properties based on `int` and other implicit casting (sometimes a DataReader may decide to return `byte` for small integer database value, and it maps to `int` perfectly via some unboxing magic)

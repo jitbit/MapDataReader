@@ -100,6 +100,12 @@ namespace MapDataReader.Tests
 			o.SetPropertyByName("NUllableBirthDay", dt);
 			Assert.IsTrue(o.NUllableBirthDay == dt);
 
+			//test nullable assign
+			DateTime? ndt = null;
+			ndt = new DateTime(2022, 10, 10);
+			o.SetPropertyByName("NUllableBirthDay", ndt);
+			Assert.IsTrue(o.NUllableBirthDay == ndt);
+
 			o.SetPropertyByName("GetOnly", 321); //should not throw any exception, even though this property is not settable
 
 			o.SetPropertyByName("ByeArray", new byte[3] { 1, 2, 3 });

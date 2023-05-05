@@ -50,11 +50,12 @@ namespace MapDataReader
 								{"\r\n" + allProperties.Select(p =>
 								{
 									var pTypeName = p.Type.FullName();
-									if (p.Type.IsReferenceType || pTypeName.EndsWith("?")) //ref types and nullable type - just cast to property type
+
+									if (p.Type.IsReferenceType || (pTypeName.EndsWith("?") && !p.Type.IsNullableEnum())) //ref types and nullable type - just cast to property type (unless nullable Enum)
 									{
 										return $@"	if (name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = value as {pTypeName}; return; }}";
 									}
-									else if (p.Type.TypeKind == TypeKind.Enum) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
+									else if (p.Type.TypeKind == TypeKind.Enum || p.Type.IsNullableEnum()) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
 										return $@"	if (value != null && name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
 									}
@@ -148,6 +149,22 @@ namespace MapDataReader
 				result.AddRange(baseType.GetAllSettableProperties()); //recursion
 
 			return result;
+		}
+
+		//checks if type is a nullable num
+		internal static bool IsNullableEnum(this ITypeSymbol symbol)
+		{
+			//tries to get underlying non-nullable type from nullable type
+			//and then check if it's Enum
+			if (symbol.NullableAnnotation == NullableAnnotation.Annotated
+				&& symbol is INamedTypeSymbol namedType
+				&& namedType.IsValueType
+				&& namedType.IsGenericType
+				&& namedType.ConstructedFrom?.ToDisplayString() == "System.Nullable<T>"
+			)
+				return namedType.TypeArguments[0].TypeKind == TypeKind.Enum;
+
+			return false;
 		}
 	}
 }

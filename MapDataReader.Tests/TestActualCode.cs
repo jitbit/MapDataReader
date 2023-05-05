@@ -37,6 +37,7 @@ namespace MapDataReader.Tests
 
 
 		public MyEnum Dude { get; set; }
+		public MyEnum? NullableDude { get; set; }
 		public string Name { get; set; }
 
 		public int GetOnly { get; } = 123; //property without public setter!
@@ -123,6 +124,12 @@ namespace MapDataReader.Tests
 
 			o.SetPropertyByName("Dude", (byte)2); //let's shove a BYTE in there!
 			Assert.IsTrue(o.Dude == MyEnum.Third); //eat this, boxing!!
+
+			o.SetPropertyByName("NullableDude", 1);
+			Assert.IsTrue(o.NullableDude == MyEnum.SecondDude);
+
+			o.SetPropertyByName("NullableDude", MyEnum.FirstDude);
+			Assert.IsTrue(o.NullableDude == MyEnum.FirstDude);
 		}
 
 		[TestMethod]

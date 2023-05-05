@@ -34,10 +34,9 @@ public class MyClass
 	public bool Enabled { get; set; }
 }
 
-//ToMyClass() method is generated at compile time
-List<MyClass> result = dbconnection.ExecuteReader("SELECT * FROM MyTable").ToMyClass();
+var dataReader = new SqlCommand("SELECT * FROM MyTable", connection).ExecuteReader();
 
-//"ExecuteReader" is just a helper method from Dapper ORM, you're free to use other ways to create a datareader
+List<MyClass> results = dataReader.ToMyClass(); // "ToMyClass" method is generated at compile time
 ```
 
 Some notes for the above

@@ -85,7 +85,11 @@ namespace MapDataReader
 								
 								if (dr.Read())
 								{{
-									string[] columnNames = Enumerable.Range(0, dr.FieldCount).Select(i => dr.GetName(i).ToUpperInvariant()).ToArray();
+									string[] columnNames = new string[dr.FieldCount];
+									
+									for (int i = 0; i < columnNames.Length; i++)
+										columnNames[i] = dr.GetName(i).ToUpperInvariant();
+
 									do
 									{{
 										var result = new {typeNodeSymbol.FullName()}();

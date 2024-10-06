@@ -152,7 +152,6 @@ namespace MapDataReader
 						/// Map the data reader to <see cref="{{typeNodeSymbol.FullName()}}">{{typeNode.Identifier}}</see>
 						/// </summary>
 						/// <seealso cref="{{typeNodeSymbol.FullName()}}">{{typeNode.Identifier}}</seealso>
-						[Obsolete("Use To<T> instead, this will be removed in future versions.")]
 						{{accessModifier}} static List<{{typeNodeSymbol.FullName()}}> To{{typeNode.Identifier}}(this IDataReader dr)
 						{
 							return dr.To<{{typeNodeSymbol.FullName()}}>();

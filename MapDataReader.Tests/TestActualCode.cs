@@ -165,7 +165,7 @@ namespace MapDataReader.Tests
 			dt.Rows.Add(123, "ggg", true, 3213, 123, date, TimeSpan.FromSeconds(123), new byte[] { 3, 2, 1 });
 			dt.Rows.Add(3, "fgdk", false, 11123, 321, date, TimeSpan.FromSeconds(123), new byte[] { 5, 6, 7, 8 });
 
-			var list = dt.CreateDataReader().ToMyObject();
+			var list = dt.CreateDataReader().To<MyObject>();
 
 			Assert.IsTrue(list.Count == 2);
 
@@ -198,7 +198,7 @@ namespace MapDataReader.Tests
 
 			dt2.Rows.Add(true, "alex", 123);
 
-			list = dt2.CreateDataReader().ToMyObject(); //should not throw exception
+			list = dt2.CreateDataReader().To<MyObject>(); //should not throw exception
 
 			Assert.IsTrue(list[0].Id == 123);
 			Assert.IsTrue(list[0].Name == "alex");

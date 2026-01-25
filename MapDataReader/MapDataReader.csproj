@@ -14,6 +14,7 @@
 	<PackageTags>aot;source-generator</PackageTags>
 	<Description>Super fast mapping of DataReader to custom objects</Description>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

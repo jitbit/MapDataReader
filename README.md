@@ -36,18 +36,34 @@ public class MyClass
 
 var dataReader = new SqlCommand("SELECT * FROM MyTable", connection).ExecuteReader();
 
-List<MyClass> results = dataReader.ToMyClass(); // "ToMyClass" method is generated at compile time
+List<MyClass> results = dataReader.To<MyClass>(); // Generic method
+
+// or
+
+List<MyClass> results = dataReader.ToMyClass(); // Direct method
 ```
 
 Some notes for the above
 
-* The `ToMyClass()` method above - is an `IDataReader` extension method generated at compile time. You can even "go to definition" in Visual Studio and examine its code.
-* The naming convention is `ToCLASSNAME()` we can't use generics here, since `<T>` is not part of method signatures in C# (considered in later versions of C#). If you find a prettier way - please contribute!
-* Maps properies with public setters only.
+* The `To<MyClass>()` method above - is an `IDataReader` extension method generated at compile time. 
+  * The naming convention is `To<T>()` where `T` is your class name marked with `[GenerateDataReaderMapper]`, e.g. `MyClass`.
+  * Thanks to [@5andr0](https://github.com/5andr0) for the suggestion of how to add the generic version of this method.
+* The `ToMyClass()` method is functionally identical to the `To<MyClass>()` method but maintained for backwards compatability.
+  * The naming convention is `ToCLASSNAME()`
+  * You can even "go to definition" in Visual Studio and examine the code for either of these two methods.
+* Maps properties with public setters only.
 * The datareader is being closed after mapping, so don't reuse it.
 * Supports `enum` properties based on `int` and other implicit casting (sometimes a DataReader may decide to return `byte` for small integer database value, and it maps to `int` perfectly via some unboxing magic)
 * Properly maps `DBNull` to `null`.
 * Complex-type properties may not work.
+
+### Legacy Mapping Method
+
+The `To<T>()` method has been added to unify the method calls, however the previous version of this method is maintained for now.
+
+```csharp
+List<MyClass> results = dataReader.ToMyClass();
+```
 
 ## Bonus API: `SetPropertyByName`
 
@@ -78,10 +94,10 @@ If you're already using the awesome [Dapper ORM](https://github.com/DapperLib/Da
 public static List<T> Query<T>(this SqlConnection cn, string sql, object parameters = null)
 {
 	if (typeof(T) == typeof(MyClass)) //our own class that we marked with attribute?
-		return cn.ExecuteReader(sql, parameters).ToMyClass() as List<T>; //use MapDataReader
+		return cn.ExecuteReader(sql, parameters).To<MyClass>() as List<T>; //use MapDataReader
 
 	if (typeof(T) == typeof(AnotherClass)) //another class we have enabled?
-		return cn.ExecuteReader(sql, parameters).ToAnotherClass() as List<T>; //again
+		return cn.ExecuteReader(sql, parameters).To<AnotherClass>() as List<T>; //again
 
 	//fallback to Dapper by default
 	return SqlMapper.Query<T>(cn, sql, parameters).AsList();

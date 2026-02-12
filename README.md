@@ -49,6 +49,20 @@ Some notes for the above
 * Properly maps `DBNull` to `null`.
 * Complex-type properties may not work.
 
+### Access Modifier: `public` or `internal`
+
+You can now specify the access modifer to be used with the mapping methods. By default, the methods will be `public` for backwards compatability.
+
+For example, to prevent exposure outside your assembly you'd set it to `internal`. This would hide the mapping methods outside your model project:
+
+``` csharp
+[GenerateDataReaderMapper("internal")]
+public class MyClass
+{
+    public int ID { get; set; }
+...
+```
+
 ## Bonus API: `SetPropertyByName`
 
 This package also adds a super fast `SetPropertyByName` extension method generated at compile time for your class.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -147,7 +148,7 @@ namespace MapDataReader.Tests
 		}
 
 		[TestMethod]
-		public void TestDatatReader()
+		public void TestDataReader()
 		{
 			//create datatable with test data
 			var dt = new DataTable();
@@ -227,6 +228,24 @@ namespace MapDataReader.Tests
 			o.SetPropertyByName("Name", 123); //try to assign string prop to int
 			Assert.IsTrue(o.Name == null); //wrong type. should be null
 		}
+
+		[TestMethod]
+		public void TestInternalAccessModifier()
+		{
+			var type = typeof(MapperExtensions);
+			var method = type.GetMethod("ToTestClassInternal", BindingFlags.Static | BindingFlags.NonPublic);
+            
+			Assert.IsNotNull(method, "Expected method 'ToTestClassInternal' to be 'internal'.");
+		}
+
+		[TestMethod]
+		public void TestInternalAccessModifierNamed()
+		{
+			var type = typeof(MapperExtensions);
+			var method = type.GetMethod("ToTestClassInternalNamed", BindingFlags.Static | BindingFlags.NonPublic);
+            
+			Assert.IsNotNull(method, "Expected method 'ToTestClassInternalNamed' to be 'internal'.");
+		}
 	}
 
 	public class BaseClass
@@ -238,6 +257,18 @@ namespace MapDataReader.Tests
 	public class ChildClass : BaseClass
 	{
 		public string Name { get; set; }
+	}
+
+	[GenerateDataReaderMapper("internal")]
+	internal class TestClassInternal
+	{
+		public int Id { get; set; }
+	}
+	
+	[GenerateDataReaderMapper(AccessModifier = "internal")]
+	internal class TestClassInternalNamed
+	{
+		public int Id { get; set; }
 	}
 }
 

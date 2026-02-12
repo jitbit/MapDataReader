@@ -32,6 +32,52 @@ namespace MyCode
 ";
 			var src = GetAndCheckOutputSource(userSource);
 		}
+		
+		[TestMethod]
+		public void TestAccessModifier()
+		{
+			string userSource = @"
+using MapDataReader;
+
+namespace MyCode
+{
+	[GenerateDataReaderMapper(""internal"")]
+	public class MyClass
+	{
+		public string Name {get;set;}
+		public int Size {get;set;}
+		public bool Enabled {get;set;}
+		public System.DateTime Created {get;set;}
+		public System.DateTimeOffset Offset {get;set;}
+		public decimal Price {get;set;}
+	}
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+		}
+		
+		[TestMethod]
+		public void TestAttributes()
+		{
+			string userSource = @"
+using MapDataReader;
+
+namespace TestNamespace
+{
+	[GenerateDataReaderMapper(AccessModifier = ""internal"", NamespaceName = ""TestNamespace"", MethodName = ""ConvertToCustom"")]
+	public class MyClass
+	{
+		public string Name {get;set;}
+		public int Size {get;set;}
+		public bool Enabled {get;set;}
+		public System.DateTime Created {get;set;}
+		public System.DateTimeOffset Offset {get;set;}
+		public decimal Price {get;set;}
+	}
+}
+";
+			var src = GetAndCheckOutputSource(userSource);
+		}
 
 		//gets generated source and also unit-tests for exceptions and empty diagnistics etc
 		private string GetAndCheckOutputSource(string inputSource)

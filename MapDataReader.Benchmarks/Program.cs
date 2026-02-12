@@ -93,7 +93,7 @@ namespace MapDataReader.Benchmarks
 		}
 	}
 
-	[GenerateDataReaderMapper]
+	[GenerateDataReaderMapper(AccessModifier = "internal")]
 	public class TestClass
 	{
 		public string String1 { get; set; }

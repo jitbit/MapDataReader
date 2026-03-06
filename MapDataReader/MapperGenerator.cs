@@ -123,13 +123,13 @@ namespace MapDataReader
 
 	internal class TargetTypeTracker : ISyntaxContextReceiver
 	{
-		public IImmutableList<ClassDeclarationSyntax> TypesNeedingGening = ImmutableList.Create<ClassDeclarationSyntax>();
+		public List<ClassDeclarationSyntax> TypesNeedingGening = new List<ClassDeclarationSyntax>();
 
 		public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
 		{
 			if (context.Node is ClassDeclarationSyntax cdecl)
 				if (cdecl.IsDecoratedWithAttribute("GenerateDataReaderMapper"))
-					TypesNeedingGening = TypesNeedingGening.Add(cdecl);
+					TypesNeedingGening.Add(cdecl);
 		}
 	}
 

@@ -47,32 +47,33 @@ namespace MapDataReader
 
 							private static void SetPropertyByUpperName(this {typeNodeSymbol.FullName()} target, string name, object value)
 							{{
-								{"\r\n" + allProperties.Select(p =>
+								switch (name)
+								{{
+{allProperties.Select(p =>
 								{
 									var pTypeName = p.Type.FullName();
 
 									if (p.Type.IsReferenceType) //ref types - just cast to property type
 									{
-										return $@"	if (name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = value as {pTypeName}; return; }}";
+										return $@"	case ""{p.Name.ToUpperInvariant()}"": target.{p.Name} = value as {pTypeName}; break;";
 									}
 									else if (pTypeName.EndsWith("?") && !p.Type.IsNullableEnum()) //nullable type (unless nullable Enum)
 									{
 										var nonNullableTypeName = pTypeName.TrimEnd('?');
 
 										//do not use "as" operator becasue "as" is slow for nullable types. Use "is" and a null-check
-										return $@"	if (name == ""{p.Name.ToUpperInvariant()}"") {{ if(value==null) target.{p.Name}=null; else if(value is {nonNullableTypeName}) target.{p.Name}=({nonNullableTypeName})value; return; }}";
+										return $@"	case ""{p.Name.ToUpperInvariant()}"": if(value==null) target.{p.Name}=null; else if(value is {nonNullableTypeName}) target.{p.Name}=({nonNullableTypeName})value; break;";
 									}
 									else if (p.Type.TypeKind == TypeKind.Enum || p.Type.IsNullableEnum()) //enum? pre-convert to underlying type then to int, you can't cast a boxed int to enum directly. Also to support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (value != null && name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); return; }}"; //pre-convert enums to int first (after unboxing, see below)
+										return $@"	case ""{p.Name.ToUpperInvariant()}"": if(value != null) target.{p.Name} = ({pTypeName})(value.GetType() == typeof(int) ? (int)value : (int)Convert.ChangeType(value, typeof(int))); break;";
 									}
 									else //primitive types. use Convert.ChangeType before casting. To support assigning "smallint" database col to int32 (for example), which does not work at first (you can't cast a boxed "byte" to "int")
 									{
-										return $@"	if (value != null && name == ""{p.Name.ToUpperInvariant()}"") {{ target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); return; }}";
+										return $@"	case ""{p.Name.ToUpperInvariant()}"": if(value != null) target.{p.Name} = value.GetType() == typeof({pTypeName}) ? ({pTypeName})value : ({pTypeName})Convert.ChangeType(value, typeof({pTypeName})); break;";
 									}
-								}).StringConcat("\r\n") } 
-
-
+								}).StringConcat("\r\n") }
+								}}
 							}} //end method";
 
 				if (typeNodeSymbol.InstanceConstructors.Any(c => !c.Parameters.Any())) //has a constructor without parameters?

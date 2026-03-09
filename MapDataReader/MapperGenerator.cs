@@ -3,14 +3,27 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace MapDataReader
 {
+	/// <summary>
+	/// Mark a class with this attribute to generate a data reader mapper for it.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class GenerateDataReaderMapperAttribute : Attribute
 	{
+	}
+
+	public static class DataReaderHelper
+	{
+		public static string[] GetUpperColumnNames(System.Data.IDataReader dr)
+		{
+			string[] columnNames = new string[dr.FieldCount];
+			for (int i = 0; i < columnNames.Length; i++)
+				columnNames[i] = dr.GetName(i).ToUpperInvariant();
+			return columnNames;
+		}
 	}
 
 	[Generator]
@@ -86,10 +99,7 @@ namespace MapDataReader
 								
 								if (dr.Read())
 								{{
-									string[] columnNames = new string[dr.FieldCount];
-									
-									for (int i = 0; i < columnNames.Length; i++)
-										columnNames[i] = dr.GetName(i).ToUpperInvariant();
+									string[] columnNames = DataReaderHelper.GetUpperColumnNames(dr);
 
 									do
 									{{
@@ -105,6 +115,27 @@ namespace MapDataReader
 								}}
 								dr.Close();
 								return list;
+							}}
+
+							public static {typeNodeSymbol.FullName()} To{typeNode.Identifier}FirstOrDefault(this IDataReader dr)
+							{{
+								if (!dr.Read())
+								{{
+									dr.Close();
+									return default;
+								}}
+
+								string[] columnNames = DataReaderHelper.GetUpperColumnNames(dr);
+
+								var result = new {typeNodeSymbol.FullName()}();
+								for (int i = 0; i < columnNames.Length; i++)
+								{{
+									var value = dr[i];
+									if (value is DBNull) value = null;
+									SetPropertyByUpperName(result, columnNames[i], value);
+								}}
+								dr.Close();
+								return result;
 							}}";
 				}
 

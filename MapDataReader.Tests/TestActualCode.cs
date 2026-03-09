@@ -38,14 +38,14 @@ namespace MapDataReader.Tests
 
 		public MyEnum Dude { get; set; }
 		public MyEnum? NullableDude { get; set; }
-		public string Name { get; set; }
+		public string? Name { get; set; }
 
 		public int GetOnly { get; } = 123; //property without public setter!
 
-		public byte[] ByeArray { get; set; }
-		public int[] IntArray { get; set; }
-		public string[] StringArray { get; set; }
-		public long[] LongArray { get; set; }
+		public byte[]? ByeArray { get; set; }
+		public int[]? IntArray { get; set; }
+		public string[]? StringArray { get; set; }
+		public long[]? LongArray { get; set; }
 	}
 
 	[TestClass]
@@ -206,6 +206,38 @@ namespace MapDataReader.Tests
 		}
 
 		[TestMethod]
+		public void TestDataReaderFirstOrDefault()
+		{
+			var dt = new DataTable();
+			dt.Columns.AddRange(new[] {
+				new DataColumn("ID", typeof(int)),
+				new DataColumn("Name", typeof(string)),
+			});
+			dt.Rows.Add(123, "first");
+			dt.Rows.Add(456, "second");
+
+			var result = dt.CreateDataReader().ToMyObjectFirstOrDefault();
+
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.Id == 123);
+			Assert.IsTrue(result.Name == "first");
+		}
+
+		[TestMethod]
+		public void TestDataReaderFirstOrDefault_Empty()
+		{
+			var dt = new DataTable();
+			dt.Columns.AddRange(new[] {
+				new DataColumn("ID", typeof(int)),
+				new DataColumn("Name", typeof(string)),
+			});
+
+			var result = dt.CreateDataReader().ToMyObjectFirstOrDefault();
+
+			Assert.IsNull(result);
+		}
+
+		[TestMethod]
 		public void TestBaseClassAssign()
 		{
 			var o = new ChildClass();
@@ -237,7 +269,7 @@ namespace MapDataReader.Tests
 	[GenerateDataReaderMapper]
 	public class ChildClass : BaseClass
 	{
-		public string Name { get; set; }
+		public string? Name { get; set; }
 	}
 }
 

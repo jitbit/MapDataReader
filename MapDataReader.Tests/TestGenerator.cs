@@ -78,7 +78,7 @@ namespace MyCode
 					MetadataReference.CreateFromFile(typeof(MapperGenerator).GetTypeInfo().Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(IDataReader).GetTypeInfo().Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(Enumerable).GetTypeInfo().Assembly.Location),
-					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "System.Runtime.dll")),
+					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Runtime.dll")),
 					MetadataReference.CreateFromFile(AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location)
 				},
 				new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

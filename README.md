@@ -68,6 +68,33 @@ x.SetPropertyByName("Size", 42); //20X faster than using reflection
 
 ---
 
+## Tip: What's actually generated?
+
+It can be difficult to see the output of the generated files. You might want to check them to see if something has gone wrong (if so please raise an issue). You might also want to include the generated classes in your source control to keep track of any unintended changes.
+
+If you update your project file with the following properties, it will tell the source generator to save the files to disk in the specified location.
+
+1. `<EmitCompilerGeneratedFiles>`: Set this to `true` to save the generated files to disk.
+2. `<GeneratedFolder>`: Set this to change the folder (relative to your project root folder) where the generated files are saved.
+3. *Optional*: `<CompilerGeneratedFilesOutputPath>`: Set this to further split up the generated files by the target framework (net481, netstandard2.0, net8.0, etc.). If you're only targeting one framework during compilation, you don't need this property.
+4. `<Compile Remove="$(GeneratedFolder)/**/*.cs" />`: This is needed to exclude the generated files from compilation as the in-memory source generator is used during compilation.
+
+```xml
+<PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GeneratedFolder>Generated</GeneratedFolder>
+    <CompilerGeneratedFilesOutputPath>$(GeneratedFolder)\$(TargetFramework)</CompilerGeneratedFilesOutputPath>
+</PropertyGroup>
+
+<ItemGroup>
+    <Compile Remove="$(GeneratedFolder)/**/*.cs" />
+</ItemGroup>
+```
+
+[More information on saving source generator output](https://andrewlock.net/creating-a-source-generator-part-6-saving-source-generator-output-in-source-control/)
+
+---
+
 ## Tip: Using it with Dapper
 
 If you're already using the awesome [Dapper ORM](https://github.com/DapperLib/Dapper) by Marc Gravel, Sam Saffron and Nick Craver, this is how you can use our library to speed up DataReader-to-object mapping in Dapper:
